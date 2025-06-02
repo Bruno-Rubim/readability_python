@@ -1,2 +1,5 @@
 class NameOfTheClass:
-    blue  = 2
+    blue = 2
+
+    def bluePrinter():
+        print(blue)
