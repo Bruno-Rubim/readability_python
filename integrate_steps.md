@@ -6,6 +6,7 @@ Install Black: We can install Black using pip, the Python package manager, as fo
 
 Create a pre-commit Configuration File: We can create a .pre-commit-config.yaml file in the root directory of our project, and define the Black hook as follows:
 <!-- YAML is a human-readable data serialization language that is often used for writing configuration files. -->
+<!-- it's reccomended that you replace "stable" with the latest version on the black repository -->
 
 - repo: https://github.com/psf/black
   rev: stable

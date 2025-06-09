@@ -27,21 +27,21 @@ large_sum_words = [
 ]
 
 
-def converter(string: str):
+def converter(enterString: str):
     word = []
 
-    if string.startswith("-"):
+    if enterString.startswith("-"):
         word.append("(negative)")
-        string = string.removeprefix("-")
+        enterString = enterString.removeprefix("-")
 
     # verifica se o numero de digitos é maior que 3 e não divisível por três
-    if len(string) > 3 and len(string) % 3 != 0:
+    if len(enterString) > 3 and len(enterString) % 3 != 0:
         # adiciona 0s à esquerda até que seja um número de dígitos multiplo de 3
-        desiredLength = 3 * (((len(string) - 1) // 3) + 1)
-        string = string.zfill(desiredLength)
+        desiredLength = 3 * (((len(enterString) - 1) // 3) + 1)
+        enterString = enterString.zfill(desiredLength)
 
     # divide a string em grupos de 3 digitos
-    three_digit_list = [string[i : i + 3] for i in range(0, len(string), 3)]
+    three_digit_list = [enterString[i : i + 3] for i in range(0, len(enterString), 3)]
     skip = False
 
     # para cada index e grupo de 3 digitos
@@ -55,16 +55,22 @@ def converter(string: str):
             if len(three_digits) == 1:
                 if (
                     (
+                        # tenha pelo menos 2 grupos de 3 digitos
                         len(three_digit_list) > 1
                         or (
-                            len(three_digit_list) == 1 and len(three_digit_list[0]) == 3
+                            # tenha exatamente 3 digitos
+                            len(three_digit_list) == 1
+                            and len(three_digit_list[0]) == 3
                         )
                     )
+                    # seja o ultimo da lista de 3 digitos
                     and i == len(three_digit_list) - 1
-                    and (word[-1] in large_sum_words or hundred in word[-1])
+                    # tenha uma das "palavras de grande numeros"
+                    and (word[-1] in large_sum_words or "hundred" in word[-1])
                 ):
                     word.append("and")
 
+                # adiciona o primeiro digito dos 3 digitos atuais à palavra
                 word.append(one_digit_words[three_digits][0])
                 # remove o primeiro digito
                 three_digits = three_digits[1:]
@@ -108,30 +114,35 @@ def converter(string: str):
 
             if len(three_digits) == 3:
                 if three_digits[0] != "0":
+                    # adiciona palavra da centena
                     word.append(one_digit_words[three_digits[0]][0] + " " + hundred)
-                    if three_digits[1:] == "00":
-                        break
+                    # essa parte não faz diferença
+                    # if three_digits[1:] == "00":
+                    #     break
+                # remove o 0 à esquerda
                 three_digits = three_digits[1:]
 
-        if len(three_digit_list[i:]) > 1 and not skip:
-            word.append(large_sum_words[len(three_digit_list[i:]) - 2])
+        if len(three_digit_list) > 2 and not skip:
+            word.append(large_sum_words[len(three_digit_list) - 3])
             skip = True
 
     word = " ".join(map(str.strip, word))
-    return (
-        word[0].lstrip().upper() + word[1:].rstrip().lower()
-        if "negative" not in word
-        else word[:11].lstrip() + word[11].upper() + word[12:].rstrip().lower()
-    )
+
+    if "negative" not in word:
+        return word[0].lstrip().upper() + word[1:].rstrip().lower()
+    else:
+        return word[:11].lstrip() + word[11].upper() + word[12:].rstrip().lower()
 
 
 if __name__ == "__main__":
     while True:
         try:
-            n = input("Enter any number to convert it into words or 'exit' to stop: ")
-            if n == "exit":
+            inputString = input(
+                "Enter any number to convert it into words or 'exit' to stop: "
+            )
+            if inputString == "exit":
                 break
-            int(n)
-            print(n, "-->", converter(n))
+            int(inputString)
+            print(inputString, "-->", converter(inputString))
         except ValueError:
             print("Error: Invalid Number!")
